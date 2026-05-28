@@ -235,7 +235,7 @@
                 <label for="datagen" class="option-label">Data Generation</label>
             </div>
             <p class="option-body">
-                This option configures the <a href="https://fabricmc.net/wiki/tutorial:datagen_setup">Fabric Data Generation API</a> in your mod. This allows you to generate resources such as recipes from code at build time.
+                This option configures the <a href="https://docs.fabricmc.net/develop/data-generation/setup">Fabric Data Generation API</a> in your mod. This allows you to generate resources such as recipes from code at build time.
             </p>
         </div>
         {/if}

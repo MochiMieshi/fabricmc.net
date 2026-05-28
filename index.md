@@ -55,9 +55,9 @@ layout: default
          <article class="column">
             <h3>Explore</h3>
             <section>
-               <p>Extensive documentation is available in the Fabric wiki for both developers and players. Get additional help from the <a href="https://discord.gg/v6v4pMv">Fabric Discord server</a>, or ask a question on the <a href="https://github.com/orgs/FabricMC/discussions">GitHub Discussion</a> forums.</p>
+               <p>Extensive documentation is available on the Fabric docs site for both developers and players. Get additional help from the <a href="https://discord.gg/v6v4pMv">Fabric Discord server</a>, or ask a question on the <a href="https://github.com/orgs/FabricMC/discussions">GitHub Discussion</a> forums.</p>
             </section>
-            <a class="button secondary" href="/wiki/">Visit the wiki</a>
+            <a class="button secondary" href="https://docs.fabricmc.net/">Visit the docs</a>
          </article>
       </div>
    </section>

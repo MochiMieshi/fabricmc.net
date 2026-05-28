@@ -18,11 +18,11 @@ If you require additional help, [the Fabric Discord server](https://discord.gg/v
          <article class="column">
             <h3>Getting Started</h3>
             <section class="with-button-group">
-               <p class="component-body">If you want to learn how to create mods, you should refer to the wiki or the official documentation site.</p>
+               <p class="component-body">If you want to learn how to create mods, you should refer to the official documentation site.</p>
             </section>
             <div class="button-group">
-							<a class="button secondary" href="https://fabricmc.net/wiki/start">Fabric Wiki</a>
 							<a class="button secondary" href="https://docs.fabricmc.net/">Fabric Documentation</a>
+                     <a class="button secondary" href="https://fabricmc.net/wiki/start">Fabric Wiki (Legacy)</a>
 						</div>
          </article>
          <article class="column">
