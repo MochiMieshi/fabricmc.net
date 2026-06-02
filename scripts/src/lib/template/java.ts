@@ -96,3 +96,55 @@ export function computePackageNameErrors(packageName: string): string[] {
 
 	return errorList;
 }
+
+const NUMERALS = [
+	'zero',
+	'one',
+	'two',
+	'three',
+	'four',
+	'five',
+	'six',
+	'seven',
+	'eight',
+	'nine'
+] as const;
+
+function convertNumericPrefix(s: string): string[] {
+	const match = s.match(/^\d+/);
+	if(!(match && match[0]))
+		return [s];
+	const numericPrefix = match[0];
+	const rest = s.substring(numericPrefix.length);
+	return [...numericPrefix.split('').map(x => NUMERALS[parseInt(x)]), rest];
+}
+
+function toPascalCase(parts: string[]): string {
+	return parts
+		.filter(Boolean)
+		.map(s => s[0].toUpperCase() + s.slice(1))
+		.join('');
+}
+
+export function formatClassname(projectName: string): string {
+	const s = toPascalCase(projectName.split(/\b/).map(s => s.replaceAll(/\W/g, '')));
+	return toPascalCase(convertNumericPrefix(s));
+}
+
+export function formatPackageName(packageName: string): string {
+	return packageName
+		.toLowerCase()
+		.replaceAll(/[\s/]+/g, '.')
+		.replaceAll(/[^a-z0-9_\.]/g, "");
+}
+
+export function generatePackageName(packageName: string): string | undefined {
+	const formatted = convertNumericPrefix(formatPackageName(packageName))
+		.join('');
+
+	if(computePackageNameErrors(formatted).length !== 0)
+		return;
+
+	return formatted;
+}
+

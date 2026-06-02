@@ -210,7 +210,7 @@ async function promptUser(
 
   const packageName: string = cli.packageName ?? await Input.prompt({
     message: "Choose a package name",
-    default: generator.formatPackageName((Deno.env.get("FABRIC_MOD_GENERATOR_GLOBAL_PACKAGE_PREFIX") ?? "") + modId),
+    default: generator.generatePackageName((Deno.env.get("FABRIC_MOD_GENERATOR_GLOBAL_PACKAGE_PREFIX") ?? "") + modId),
     transform: (value) => {
       return generator.formatPackageName(value);
     },

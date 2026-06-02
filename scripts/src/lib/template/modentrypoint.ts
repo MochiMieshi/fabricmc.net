@@ -8,6 +8,7 @@ import kotlinEntrypointClientTemplate from './templates/entrypoint/ClientEntrypo
 import javaEntrypointDataGeneratorTemplate from './templates/entrypoint/DataGeneratorEntrypoint.java.eta?raw';
 import kotlinEntrypointDataGeneratorTemplate from './templates/entrypoint/DataGeneratorEntrypoint.kt.eta?raw';
 import { minecraftSupportsSlf4j } from "./minecraft";
+import { formatClassname } from "./java";
 
 interface ClassOptions {
     package: string, // com.example
@@ -47,12 +48,7 @@ export async function generateEntrypoint(writer: TemplateWriter, options: Comput
     }
 }
 
-function formatClassname(projectName: string): string {
-    return projectName.split(' ')
-        .map(s => s[0].toUpperCase() + s.slice(1))
-        .join("")
-        .replace(/\W+/g, "");
-}
+
 
 async function generateJavaEntrypoint(writer: TemplateWriter, options: ClassOptions): Promise<unknown> {
     var entrypoints: any = {

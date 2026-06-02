@@ -93,9 +93,6 @@ export function computeCustomModIdErrors(id: string | undefined): string[] | und
 	return errorList;
 }
 
-export function formatPackageName(packageName: string): string {
-	return packageName.toLocaleLowerCase().replaceAll(/\s+/g, '.').replaceAll(/[^a-za-z0-9_\.]/g, "")
-}
 
 export function nameToModId(name: string) {
 	return name.toLowerCase().replaceAll(/\s+/g, '-').replaceAll(/[^a-za-z0-9-_]/g, "");

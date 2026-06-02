@@ -3,8 +3,8 @@
     import FileSaver from "file-saver";
     import DownloadIcon from "./DownloadIcon.svelte";
     import { ICON_FONT, getTemplateGameVersions, type Configuration } from "./template/template";
-    import { minecraftSupportsDataGen, minecraftSupportsSplitSources, computeCustomModIdErrors, sharedModIdChecks, formatPackageName, nameToModId, minecraftIsUnobfuscated} from "./template/minecraft";
-    import { computePackageNameErrors } from "./template/java"
+    import { minecraftSupportsDataGen, minecraftSupportsSplitSources, computeCustomModIdErrors, sharedModIdChecks, nameToModId, minecraftIsUnobfuscated} from "./template/minecraft";
+    import { computePackageNameErrors, formatPackageName } from "./template/java"
     import { decode64 } from "./template/utils";
 
     let minecraftVersion: string;
