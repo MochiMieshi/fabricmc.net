@@ -4,7 +4,8 @@
     import DownloadIcon from "./DownloadIcon.svelte";
     import { ICON_FONT, getTemplateGameVersions, type Configuration } from "./template/template";
     import { minecraftSupportsDataGen, minecraftSupportsSplitSources, computeCustomModIdErrors, sharedModIdChecks, nameToModId, minecraftIsUnobfuscated} from "./template/minecraft";
-    import { computePackageNameErrors, formatPackageName } from "./template/java"
+    import { computePackageNameErrors, formatPackageName } from "./template/java";
+	import { licenses, readLicenseText, computeLicenseErrors, formatLicense } from "./template/license";
     import { decode64 } from "./template/utils";
 
     let minecraftVersion: string;
@@ -12,7 +13,9 @@
     let packageName = "com.example";
     let authorText = "Me, Myself, I";
     let modDescription = "This is an example description! Tell everyone what your mod is about!";
-    let license = "CC0-1.0";
+    let licenseName = "CC0-1.0";
+	let licenseText = "";
+	let customLicenseName = "";
     let useKotlin = false;
     let mojmap = true;
     let dataGeneration = false;
@@ -21,6 +24,8 @@
 
     let customModId: string | undefined;
     let loading = false;
+
+	let customLicense = false;
 
     $: modid = nameToModId(projectName);
 
@@ -38,6 +43,7 @@
     $: modIdErrors = computeModIdErrors(modid);
     $: customIdErrors = computeCustomModIdErrors(customModId);
     $: packageNameErrors = computePackageNameErrors(packageName);
+	$: licenseErrors = computeLicenseErrors(customLicense, licenseName);
 
     function computeModIdErrors(id: string | undefined) : string[] | undefined {
       if (id === undefined) {
@@ -54,6 +60,17 @@
 
         loading = true;
 
+		if (!customLicense) {
+			licenseText = readLicenseText(licenseName);
+		}
+		else {
+			licenseText = readLicenseText("Template")
+		}
+
+		let usedLicenseName = customLicense ? customLicenseName : licenseName;
+
+		licenseText = formatLicense(licenseText, authorText);
+
         const generator = await import("./template/template");
         const config: Configuration = {
             modid: customModId ?? modid,
@@ -62,7 +79,8 @@
             packageName,
             authorText,
             modDescription,
-            license,
+            licenseName: usedLicenseName,
+			licenseText: licenseText,
             useKotlin,
             mojmap: mojmap || isUnobfuscated,
             dataGeneration: dataGeneration && supportsDataGen,
@@ -127,6 +145,14 @@
     function useDefaultModId() {
         customModId = undefined;
     }
+
+	function useCustomLicense() {
+		customLicense = true;
+	}
+
+	function useDefaultLicense() {
+		customLicense = false;
+	}
 </script>
 
 {#await versions}
@@ -188,35 +214,80 @@
             {/each}
         </div>
 
-    <div class="form-line">
-        <h3>Authors</h3>
-        <hr />
-        <p>
-            Enter the author(s) of your mod, separated by commas.
-            This will be included in the generated
-            <code>fabric.mod.json</code> file.
-        </p>
+		<div class="form-line">
+			<h3>Authors</h3>
+			<hr />
+			<p>
+				Enter the author(s) of your mod, separated by commas.
+				This will be included in the generated
+				<code>fabric.mod.json</code> file.
+			</p>
 
-        <input id="authors" bind:value={authorText} />
-    </div>
+			<input id="authors" bind:value={authorText} />
+		</div>
 
-    <div class="form-line">
-        <h3>Mod Description:</h3>
-        <hr />
-        <p>
-            Enter a short description for your mod. This will be included in the generated <code>fabric.mod.json</code> file and can be used by mod listing sites to display information about your mod.
-        </p>
-        <input id="mod-description" bind:value={modDescription} />
-    </div>
+		<div class="form-line">
+			<h3>Mod Description:</h3>
+			<hr />
+			<p>
+				Enter a short description for your mod. This will be included in the generated <code>fabric.mod.json</code> file and can be used by mod listing sites to display information about your mod.
+			</p>
+			<input id="mod-description" bind:value={modDescription} />
+		</div>
 
-    <div class="form-line">
-        <h3>License:</h3>
-        <hr />
-        <p>
-            Enter the license for your mod, preferrably using <a href="https://spdx.org/licenses/">SPDX License Identifier</a>. This will be included in the generated <code>fabric.mod.json</code> file.
-        </p>
-        <input id="license" bind:value={license} />
-    </div>
+		<div class="form-line">
+			<h3>License:</h3>
+			<hr />
+
+			{#if !customLicense}
+				<p>
+					Select a license for your mod. The <a href="https://spdx.org/licenses/">SPDX License Identifier </a> will be included in the generated <code>fabric.mod.json</code> file, and the full text should be written to the generated <code>LICENSE</code> file.
+				</p>
+
+				<select
+					id="license"
+					bind:value={licenseName}
+					style="min-width: 200px"
+				>
+					{#each licenses as l}
+						<option value={l}>{l}</option>
+					{/each}
+				</select>
+
+				<br />
+				<br />
+
+				<a href={""} on:click|preventDefault={useCustomLicense}>
+					Use custom license
+				</a>
+			{:else}
+				<p>
+					Enter a custom license identifier. This does not need to be an
+					<a href="https://spdx.org/licenses/">
+						SPDX License Identifier
+					</a>.
+				</p>
+
+				<input
+					id="custom-license-name"
+					bind:value={customLicenseName}
+				/>
+
+				<br />
+				<br />
+
+				<a href={""} on:click|preventDefault={useDefaultLicense}>
+					Use built-in licenses
+				</a>
+			{/if}
+
+			{#if licenseErrors != undefined}
+				{#each licenseErrors as error}
+					<li style="color: red">{error}</li>
+				{/each}
+				<br />
+			{/if}
+		</div>
 
         <div class="form-line">
             <h3>Minecraft Version:</h3>
