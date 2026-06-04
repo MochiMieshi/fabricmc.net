@@ -11,10 +11,6 @@
     let projectName = "Template Mod";
     let packageName = "com.example";
     let authorText = "Me, Myself, I";
-	$: authors = authorText
-		.split(",")
-		.map(author => author.trim())
-		.filter(author => author.length > 0);
     let modDescription = "This is an example description! Tell everyone what your mod is about!";
     let license = "CC0-1.0";
     let useKotlin = false;
@@ -64,9 +60,9 @@
             minecraftVersion,
             projectName,
             packageName,
-			authors,
-			modDescription,
-			license,
+            authorText,
+            modDescription,
+            license,
             useKotlin,
             mojmap: mojmap || isUnobfuscated,
             dataGeneration: dataGeneration && supportsDataGen,
@@ -192,35 +188,35 @@
             {/each}
         </div>
 
-	<div class="form-line">
-		<h3>Authors</h3>
-		<hr />
-		<p>
-			Enter the author(s) of your mod, separated by commas.
-			This will be included in the generated
-			<code>fabric.mod.json</code> file.
-		</p>
+    <div class="form-line">
+        <h3>Authors</h3>
+        <hr />
+        <p>
+            Enter the author(s) of your mod, separated by commas.
+            This will be included in the generated
+            <code>fabric.mod.json</code> file.
+        </p>
 
-		<input id="authors" bind:value={authorText} />
-	</div>
+        <input id="authors" bind:value={authorText} />
+    </div>
 
-	<div class="form-line">
-		<h3>Mod Description:</h3>
-		<hr />
-		<p>
-			Enter a short description for your mod. This will be included in the generated <code>fabric.mod.json</code> file and can be used by mod listing sites to display information about your mod.
-		</p>
-		<input id="mod-description" bind:value={modDescription} />
-	</div>
+    <div class="form-line">
+        <h3>Mod Description:</h3>
+        <hr />
+        <p>
+            Enter a short description for your mod. This will be included in the generated <code>fabric.mod.json</code> file and can be used by mod listing sites to display information about your mod.
+        </p>
+        <input id="mod-description" bind:value={modDescription} />
+    </div>
 
-	<div class="form-line">
-		<h3>License:</h3>
-		<hr />
-		<p>
-			Enter the license for your mod. This will be included in the generated <code>fabric.mod.json</code> file.
-		</p>
-		<input id="license" bind:value={license} />
-	</div>
+    <div class="form-line">
+        <h3>License:</h3>
+        <hr />
+        <p>
+            Enter the license for your mod, preferrably using <a href="https://spdx.org/licenses/">SPDX License Identifier</a>. This will be included in the generated <code>fabric.mod.json</code> file.
+        </p>
+        <input id="license" bind:value={license} />
+    </div>
 
         <div class="form-line">
             <h3>Minecraft Version:</h3>
@@ -330,8 +326,8 @@
 
 <style lang="scss">
     @font-face {
-    	font-family: "Comic Relief";
-	    src: url("/assets/fonts/ComicRelief-Regular.woff2");
+        font-family: "Comic Relief";
+        src: url("/assets/fonts/ComicRelief-Regular.woff2");
     }
     
     .template {

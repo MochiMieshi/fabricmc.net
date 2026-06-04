@@ -24,7 +24,7 @@ export async function addModJson(writer: TemplateWriter, canvas: CanvasAdaptorFa
     "version": "${version}",
     "name": config.projectName,
     "description": config.modDescription,
-    "authors": config.authors,
+    "authors": config.authorText.split(",").map(a => a.trim()).filter(a => a.length > 0),
     "contact": {
       "homepage": "https://fabricmc.net/",
       "sources": "https://github.com/FabricMC/fabric-example-mod"
