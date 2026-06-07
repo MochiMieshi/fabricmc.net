@@ -1,14 +1,25 @@
-export const licenses = [
-	"Template",
-	"MIT",
-	"Apache-2.0",
-	"MPL-2.0",
-	"LGPL-3.0-or-later",
-	"GPL-3.0-or-later",
-	"BSD-3-Clause",
-	"CC0-1.0",
-	"Unlicense"
-];
+const licenseFolder = "./templates/license";
+
+function extractLicenseIds(): string[] {
+	const licenseFiles = import.meta.glob(
+		licenseFolder + "/*.txt",
+		{
+			query: "?raw",
+			import: "default",
+			eager: true,
+		}
+	) as Record<string, string>;
+
+	return Object.keys(licenseFiles).map((path) => {
+		const match = path.match(/\/([^\/]+)\.txt$/);
+		if (match) {
+			return match[1];
+		}
+		throw new Error(`Invalid license file path: ${path}`);
+	});
+}
+
+export var licenses = extractLicenseIds();
 
 const LICENSE_NOT_FOUND = "No license found. Please specify a valid license.";
 
@@ -44,12 +55,10 @@ export function computeLicenseErrors(
 }
 
 export function formatLicense(
-    raw: string,
+    text: string,
     authorText: string
 ): string {
-    const decoded = JSON.parse(`"${raw}"`);
-
-    return decoded
+    return text
         .replace(/<(?:copyright holders|owner|fullname)>/gi, authorText)
         .replace(/<year>/gi, String(new Date().getFullYear()));
 }
