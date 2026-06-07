@@ -1,8 +1,6 @@
-const licenseFolder = "./templates/license";
-
 function extractLicenseIds(): string[] {
 	const licenseFiles = import.meta.glob(
-		licenseFolder + "/*.txt",
+		"./templates/license/*.txt",
 		{
 			query: "?raw",
 			import: "default",
