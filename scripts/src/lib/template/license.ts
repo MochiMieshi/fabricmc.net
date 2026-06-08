@@ -19,7 +19,7 @@ function extractLicenseIds(): string[] {
 	});
 }
 
-export var licenses = extractLicenseIds();
+export var supportedLicenses = extractLicenseIds();
 
 const LICENSE_NOT_FOUND = "No license found. Please specify a valid license.";
 
@@ -35,7 +35,7 @@ const licenseFiles = import.meta.glob(
 export function readLicenseText(
     license: string
 ): string {
-    if (!licenses.includes(license)) {
+    if (!supportedLicenses.includes(license)) {
         throw new Error(LICENSE_NOT_FOUND);
     }
 
@@ -48,14 +48,15 @@ export function readTemplateLicenseText(): string {
 }
 
 export function computeLicenseErrors(
-	customLicense: boolean,
-	license: string
+    licenseExpression: string
 ): string[] | undefined {
-	if (!customLicense && !licenses.includes(license)) {
-		return [LICENSE_NOT_FOUND];
-	}
+    const result = validateSpdxExpression(licenseExpression, true);
 
-	return undefined;
+    if (!result.valid) {
+        return [result.error ?? "Invalid SPDX expression."];
+    }
+
+    return undefined;
 }
 
 export function fillBoilerplate(
@@ -77,5 +78,144 @@ export function genCopyrightNotice(
 export function genSpdxHeader(
 	options: Configuration
 ): string {
-	return `SPDX-License-Identifier: ${options.licenseName}`;
+	return `SPDX-License-Identifier: ${options.licenseExpression}`;
+}
+
+const TOKEN_REGEX = /\(|\)|AND|OR|WITH|[A-Za-z0-9.-]+/g;
+
+export interface SpdxValidationResult {
+    valid: boolean;
+    licenses: string[];
+    error?: string;
+}
+
+export function validateSpdxExpression(
+    expression: string,
+    allowCustomLicenses = false
+): SpdxValidationResult {
+    const tokens = expression.match(TOKEN_REGEX) ?? [];
+
+    if (tokens.length === 0) {
+        return {
+            valid: false,
+            licenses: [],
+            error: "Empty SPDX expression."
+        };
+    }
+
+    const includedLicenses = new Set<string>();
+
+    let i = 0;
+
+    function peek(): string | undefined {
+        return tokens[i];
+    }
+
+    function consume(expected?: string): string {
+        const token = tokens[i++];
+
+        if (expected && token !== expected) {
+            throw new Error(
+                `Expected '${expected}', found '${token ?? "EOF"}'.`
+            );
+        }
+
+        return token;
+    }
+
+    function parsePrimary(): void {
+        const token = peek();
+
+        if (token === "(") {
+            consume("(");
+            parseExpression();
+            consume(")");
+            return;
+        }
+
+        if (token == null) {
+            throw new Error("Unexpected end of expression.");
+        }
+
+        if (
+            !allowCustomLicenses &&
+            !supportedLicenses.includes(token)
+        ) {
+            throw new Error(`Unknown license '${token}'.`);
+        }
+
+        includedLicenses.add(token);
+        consume();
+
+        if (peek() === "WITH") {
+            consume("WITH");
+
+            const exception = peek();
+
+            if (exception == null) {
+                throw new Error(
+                    "Expected SPDX exception after WITH."
+                );
+            }
+
+            // TODO: Validate against SPDX exception list.
+            consume();
+        }
+    }
+
+    function parseAnd(): void {
+        parsePrimary();
+
+        while (peek() === "AND") {
+            consume("AND");
+            parsePrimary();
+        }
+    }
+
+    function parseExpression(): void {
+        parseAnd();
+
+        while (peek() === "OR") {
+            consume("OR");
+            parseAnd();
+        }
+    }
+
+    try {
+        parseExpression();
+
+        if (i !== tokens.length) {
+            throw new Error(
+                `Unexpected token '${tokens[i]}'.`
+            );
+        }
+
+        return {
+            valid: true,
+            licenses: [...includedLicenses]
+        };
+    } catch (e) {
+        return {
+            valid: false,
+            licenses: [],
+            error:
+                e instanceof Error
+                    ? e.message
+                    : String(e)
+        };
+    }
+}
+
+export function extractSpdxLicenses(
+    expression: string,
+    allowCustomLicenses = false
+): string[] {
+    const result = validateSpdxExpression(
+        expression,
+        allowCustomLicenses
+    );
+
+    return result.valid
+        ? result.licenses
+        : [];
 }

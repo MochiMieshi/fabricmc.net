@@ -29,7 +29,7 @@ export async function addModJson(writer: TemplateWriter, canvas: CanvasAdaptorFa
       "homepage": "https://fabricmc.net/",
       "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
-    "license": config.licenseName,
+    "license": config.licenseExpression,
     "icon": `assets/${config.modid}/icon.png`,
     "environment": "*",
     "entrypoints": await generateEntrypoint(writer, config),
