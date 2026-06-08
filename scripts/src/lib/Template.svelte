@@ -5,7 +5,7 @@
     import { ICON_FONT, getTemplateGameVersions, type Configuration } from "./template/template";
     import { minecraftSupportsDataGen, minecraftSupportsSplitSources, computeCustomModIdErrors, sharedModIdChecks, nameToModId, minecraftIsUnobfuscated} from "./template/minecraft";
     import { computePackageNameErrors, formatPackageName } from "./template/java";
-	import { licenses, readLicenseText, computeLicenseErrors, formatLicense } from "./template/license";
+	import { licenses, readLicenseText, readTemplateLicenseText, computeLicenseErrors, formatLicense } from "./template/license";
     import { decode64 } from "./template/utils";
 
     let minecraftVersion: string;
@@ -64,7 +64,7 @@
 			licenseText = readLicenseText(licenseName);
 		}
 		else {
-			licenseText = readLicenseText("Template")
+			licenseText = readTemplateLicenseText();
 		}
 
 		let usedLicenseName = customLicense ? customLicenseName : licenseName;

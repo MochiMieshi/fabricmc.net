@@ -41,6 +41,10 @@ export function readLicenseText(
     return licenseFiles[path];
 }
 
+export function readTemplateLicenseText(): string {
+	return readLicenseText("Template");
+}
+
 export function computeLicenseErrors(
 	customLicense: boolean,
 	license: string
