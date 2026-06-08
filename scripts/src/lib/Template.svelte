@@ -5,7 +5,7 @@
     import { ICON_FONT, getTemplateGameVersions, type Configuration } from "./template/template";
     import { minecraftSupportsDataGen, minecraftSupportsSplitSources, computeCustomModIdErrors, sharedModIdChecks, nameToModId, minecraftIsUnobfuscated} from "./template/minecraft";
     import { computePackageNameErrors, formatPackageName } from "./template/java";
-	import { licenses, readLicenseText, readTemplateLicenseText, computeLicenseErrors, formatLicense } from "./template/license";
+	import { licenses, readLicenseText, readTemplateLicenseText, computeLicenseErrors, fillBoilerplate } from "./template/license";
     import { decode64 } from "./template/utils";
 
     let minecraftVersion: string;
@@ -69,7 +69,7 @@
 
 		let usedLicenseName = customLicense ? customLicenseName : licenseName;
 
-		licenseText = formatLicense(licenseText, authorText);
+		licenseText = fillBoilerplate(licenseText, authorText);
 
         const generator = await import("./template/template");
         const config: Configuration = {

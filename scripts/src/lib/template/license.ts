@@ -1,3 +1,5 @@
+import type { Configuration } from "./template";
+
 function extractLicenseIds(): string[] {
 	const licenseFiles = import.meta.glob(
 		"./templates/license/*.txt",
@@ -56,11 +58,24 @@ export function computeLicenseErrors(
 	return undefined;
 }
 
-export function formatLicense(
+export function fillBoilerplate(
     text: string,
     authorText: string
 ): string {
     return text
         .replace(/<holders>/gi, authorText)
         .replace(/<year>/gi, String(new Date().getFullYear()));
+}
+
+export function genCopyrightNotice(
+	options: Configuration
+): string {
+	const template = "Copyright (c) <year> <holders>";
+	return fillBoilerplate(template, options.authorText);
+}
+
+export function genSpdxHeader(
+	options: Configuration
+): string {
+	return `SPDX-License-Identifier: ${options.licenseName}`;
 }
