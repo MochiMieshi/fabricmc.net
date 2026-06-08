@@ -61,6 +61,6 @@ export function formatLicense(
     authorText: string
 ): string {
     return text
-        .replace(/<(?:copyright holders|owner|fullname)>/gi, authorText)
+        .replace(/<holders>/gi, authorText)
         .replace(/<year>/gi, String(new Date().getFullYear()));
 }
